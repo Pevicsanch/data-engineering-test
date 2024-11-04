@@ -110,3 +110,40 @@ collected 4 items
 
 tests/test_calculate_crate_distribution.py ....                                                                                                                                                                                                                                               [100%]
  ```
+## Task 2: DataFrame of Orders with Full Name of the Contact
+
+
+This task extracts the contact full name from each order and outputs a DataFrame containing order_id and contact_full_name. If contact information is missing, a placeholder “John Doe” is used.
+
+**Solution Summary:**
+
+1.	Data Extraction: Reads contact_data field from orders.csv.
+2.	Data Validation and Transformation:
+    +	Parses contact_data to extract contact_name and contact_surname.
+    +	If either name is missing, assigns “John Doe”.
+3.	Output Generation: Saves the resulting DataFrame as contact_fullname.csv in the output/ directory.
+
+**How to Run:**
+
+```bash
+python scripts/calculate_contact_fullname.py
+```
+**Example Output:** The output CSV has the following structure:
+
+| order_id                               | contact_full_name |
+|----------------------------------------|--------------------|
+| f47ac10b-58cc-4372-a567-0e02b2c3d479   | Curtis Jackson    |
+| f47ac10b-58cc-4372-a567-0e02b2c3d480   | Maria Theresa     |
+
+
+**Running Unit Tests:** Unit tests verify that:
+
++	Full names are correctly extracted.
++	Missing or incomplete data defaults to “John Doe”.
++	Output CSV is created and matches the expected DataFrame structure.
+
+To run the tests, use:
+    
+```bash
+pytest tests/test_calculate_contact_fullname.py
+```
