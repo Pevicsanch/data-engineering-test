@@ -1,5 +1,3 @@
-# scripts/data_downloader.py
-
 import requests
 import logging
 import os
@@ -31,13 +29,14 @@ def download_file(url, local_filename):
         logging.error(f"Failed to download {local_filename}. Error: {e}")
         raise  # Re-raise the exception after logging
 
-# URLs for the files
+# URLs for the files (raw URLs from GitHub)
 url_orders = 'https://raw.githubusercontent.com/Digital-IFCO/data-engineering-test/main/resources/orders.csv'
 url_invoicing = 'https://raw.githubusercontent.com/Digital-IFCO/data-engineering-test/main/resources/invoicing_data.json'
 
-# Paths to save the files
-orders_path = '../data/orders.csv'
-invoicing_path = '../data/invoicing_data.json'
+# Define absolute paths for the files
+data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+orders_path = os.path.join(data_dir, 'orders.csv')
+invoicing_path = os.path.join(data_dir, 'invoicing_data.json')
 
 # Download the files
 download_file(url_orders, orders_path)
