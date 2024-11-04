@@ -15,8 +15,8 @@ def validate_data(df):
     df = df.dropna(subset=['company_id', 'crate_type'])
     
     # Convert 'company_id' and 'crate_type' to string if not already
-    df['company_id'] = df['company_id'].astype(str)
-    df['crate_type'] = df['crate_type'].astype(str)
+    df.loc[:, 'company_id'] = df['company_id'].astype(str)
+    df.loc[:, 'crate_type'] = df['crate_type'].astype(str)
     
     # Define valid crate types and filter invalid ones
     valid_crate_types = {"Plastic", "Wood", "Metal"}
