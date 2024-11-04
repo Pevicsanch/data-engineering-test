@@ -23,8 +23,12 @@ Here is the directory tree for better visualization:
 ├── output/
 ├── scripts/
 │   └── data_downloader.py
+│   └── calculate_crate_distribution.py
 ├── notebooks/
 ├── tests/
+│   ├── test_data_downloader.py
+│   └── test_calculate_crate_distribution.py
+├── requirements.txt
 └── README.md
 ```
 
@@ -48,6 +52,15 @@ To start, you need to download the data files (orders.csv and invoicing_data.jso
     python scripts/data_downloader.py
     ```
 This will save orders.csv and invoicing_data.json in the data/ folder, creating it if it doesn’t exist.
+
+**Testing Data Download**:A unit test is available to verify that the data download function works correctly and saves files as expected.
+
+To run the test for data_downloader.py, use:
+    
+```bash
+pytest tests/test_data_downloader.py
+```
+This will check that the files are downloaded to the correct location and validate their presence after the download completes.
 
 ## Task 1: Distribution of Crate Type per Company
 
@@ -76,3 +89,24 @@ python scripts/calculate_crate_distribution.py
 |----------------------------------------|------------|-------------|
 | 1e2b47e6-499e-41c6-91d3-09d12dddfbbd   | Plastic    | 10          |
 | 34538e39-cd2e-4641-8d24-3c94146e6f16   | Wood       | 5           |
+
+**Runing Unit Test:** Unit tests are provided to ensure the correct functionality of the data processing functions in scripts/calculate_crate_distribution.py. The tests cover:
+- Data loading and validation to ensure the data is cleaned correctly.
+- Calculation of crate type distribution per company.
+- aving of the output distribution file.
+
+**How to run the tests:** To run the tests, use the following command:
+
+```bash
+pytest tests/test_calculate_crate_distribution.py
+```
+
+If all tests pass, you should see output indicating success:
+    
+ ```bash
+    ==================================================================== test session starts =====================================================================
+platform darwin -- Python 3.11.5, pytest-8.3.3
+collected 4 items
+
+tests/test_calculate_crate_distribution.py ....                                                                                                                                                                                                                                               [100%]
+ ```
