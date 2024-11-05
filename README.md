@@ -26,7 +26,7 @@ Here is the directory tree for better visualization:
 │   └── calculate_crate_distribution.py
 │   └── calculate_contact_fullname.py
 │   └──contact_address_processing.py
-
+    └── calculate_commissions.py
 ├── notebooks/
 │   ├── exercise_1.ipynb
 ├── tests/
@@ -34,6 +34,7 @@ Here is the directory tree for better visualization:
 │   └── test_calculate_crate_distribution.py
 │   └── test_calculate_contact_fullname.py
 │   └── test_contact_address_processing.py
+│   └── test_calculate_commissions.py
 ├── requirements.txt
 └── README.md
 ```
@@ -187,5 +188,33 @@ to run the tests, use:
 ```bash
 pytest tests/test_contact_address_processing.py
 ```
-f all tests pass, you will see output indicating success.
+if all tests pass, you will see output indicating success.
 
+
+## Task 4: Calculation of Sales Team Commissions
+
+This task calculates commissions for the sales team based on each order’s net invoiced value. Commissions are allocated as follows:
+- **Main Owner**: 6% of the net invoiced value.
+- **Co-owner 1**: 2.5% of the net invoiced value.
+- **Co-owner 2**: 0.95% of the net invoiced value.
+- Any additional co-owners do not receive a commission.
+
+**Solution Summary:**
+1. **Data Loading**: Loads data from `orders.csv` and `invoicing_data.json`.
+2. **Data Validation**: Ensures required fields are present in both datasets, checking for valid `order_id`, `salesowners`, and `net_invoiced_value_euros`.
+3. **Commission Calculation**:
+    - Calculates commission based on sales owner position.
+    - Adds commission totals for each sales owner.
+4. **Output Generation**: Saves the resulting DataFrame as `sales_owner_commissions.csv` in the `output/` directory.
+
+**How to Run:**
+
+```bash
+python scripts/calculate_commissions.py
+```
+This will output a CSV file with the following structure:
+
+| sales_owner | total_commission |
+|-------------|------------------|
+Leonard Cohen	629.28
+David Henderson	465.34
