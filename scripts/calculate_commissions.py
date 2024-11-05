@@ -6,7 +6,6 @@ import json
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-
 def load_data(orders_path, invoicing_path):
     """Load orders and invoicing data from specified paths."""
     try:
@@ -30,7 +29,6 @@ def load_data(orders_path, invoicing_path):
 
     return orders_df, invoicing_df
 
-
 def validate_data(orders_df, invoicing_df):
     """Validate that data contains required columns and is not empty."""
     if orders_df.empty or invoicing_df.empty:
@@ -49,35 +47,49 @@ def validate_data(orders_df, invoicing_df):
 
     return True
 
-
 def calculate_commissions(merged_df):
     """Calculate commissions for each sales owner from merged data."""
     commission_rates = {"main_owner": 0.06, "co_owner_1": 0.025, "co_owner_2": 0.0095}
     commission_dict = {}
 
+    logging.info("Starting detailed commission calculation...")
+    
     for _, row in merged_df.iterrows():
         salesowners = row.get('salesowners', [])
         net_value = row.get('net_invoiced_value_euros', 0)
 
         if pd.notna(net_value):
-            for idx, role in enumerate(["main_owner", "co_owner_1", "co_owner_2"]):
-                if idx < len(salesowners):
-                    owner = salesowners[idx]
-                    commission = net_value * commission_rates[role]
-                    commission_dict[owner] = commission_dict.get(owner, 0) + commission
-                    logging.debug(f"{role.capitalize()} {owner} commission added: {commission:.2f}")
+            # Main owner
+            if len(salesowners) > 0:
+                main_owner = salesowners[0]
+                main_commission = net_value * commission_rates["main_owner"]
+                commission_dict[main_owner] = commission_dict.get(main_owner, 0) + main_commission
+                logging.debug(f"Main owner {main_owner} receives commission: {main_commission:.2f}")
+
+            # Co-owner 1
+            if len(salesowners) > 1:
+                co_owner_1 = salesowners[1]
+                co_owner_1_commission = net_value * commission_rates["co_owner_1"]
+                commission_dict[co_owner_1] = commission_dict.get(co_owner_1, 0) + co_owner_1_commission
+                logging.debug(f"Co-owner 1 {co_owner_1} receives commission: {co_owner_1_commission:.2f}")
+
+            # Co-owner 2
+            if len(salesowners) > 2:
+                co_owner_2 = salesowners[2]
+                co_owner_2_commission = net_value * commission_rates["co_owner_2"]
+                commission_dict[co_owner_2] = commission_dict.get(co_owner_2, 0) + co_owner_2_commission
+                logging.debug(f"Co-owner 2 {co_owner_2} receives commission: {co_owner_2_commission:.2f}")
 
     commission_df = pd.DataFrame(list(commission_dict.items()), columns=['sales_owner', 'total_commission'])
     commission_df['total_commission'] = commission_df['total_commission'].round(2)
+    
     return commission_df.sort_values(by='total_commission', ascending=False).reset_index(drop=True)
-
 
 def save_commissions(commission_df, output_path):
     """Save the commission DataFrame to the specified path."""
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     commission_df.to_csv(output_path, index=False)
     logging.info(f"Commission file saved at {output_path}")
-
 
 def main(orders_path, invoicing_path, output_path):
     """Main function to calculate and save commissions."""
@@ -105,7 +117,6 @@ def main(orders_path, invoicing_path, output_path):
 
     save_commissions(commission_df, output_path)
     logging.info("Commission calculation completed successfully.")
-
 
 # Run the main function
 if __name__ == "__main__":
