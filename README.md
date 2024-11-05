@@ -26,6 +26,7 @@ Here is the directory tree for better visualization:
 │   ├── calculate_contact_fullname.py
 │   ├── contact_address_processing.py
 │   └── calculate_commissions.py
+    └──company_salesowners.py
 ├── notebooks/
 │   ├── exercise_1.ipynb
 ├── tests/
@@ -34,6 +35,7 @@ Here is the directory tree for better visualization:
 │   ├── test_calculate_contact_fullname.py
 │   ├── test_contact_address_processing.py
 │   └── test_calculate_commissions.py
+    └── test_company_salesowners.py
 ├── requirements.txt
 └── README.md
 ```
@@ -226,10 +228,10 @@ This will output a CSV file with the following structure:
 
 **Running Unit Tests:** Unit tests for `calculate_commissions.py` include checks for:
 
-	•	Correctness of calculated commissions.
-	•	Validation of required fields.
-	•	Proper sorting order of sales owner commissions.
-	•	CSV file creation with the expected content.
++	Correctness of calculated commissions.
++	Validation of required fields.
++	Proper sorting order of sales owner commissions.
++	CSV file creation with the expected content.
 
 to run the tests, use:
 
@@ -237,4 +239,49 @@ to run the tests, use:
 pytest tests/test_calculate_commissions.py
 ```
 
-tt 
+## Task 5: DataFrame of Companies with Sales Owners:
+This task consolidates a unique list of sales owners for each company, creating a DataFrame (df3) with company_id, the normalized company name, and a comma-separated list of salesowners in alphabetical order.
+
+**Solution Summary:**
+
+1.	**Company Name Normalization:** Cleans up company names by removing common suffixes and applying lemmatization to ensure consistency.
+2.	**Similarity Group Assignment:** Uses Jaccard similarity to group company names that are likely duplicates, accounting for slight variations in spelling or formatting.
+3.	**Sales Owner Consolidation:** Creates a unique, alphabetically sorted list of salesowners who have participated in orders for each company. The list ensures that duplicate sales owners are removed and that the names are sorted for consistency.
+
+**How to Run:**
+
+```bash
+python scripts/company_salesowners.py
+```
+This will output a CSV file with the following structure:
+
+| company_id                             | company_name | sales_owners |
+|----------------------------------------|--------------|--------------|
+| 1e2b47e6-499e-41c6-91d3-09d12dddfbbd   | Company A    | John Doe, Jane Smith |
+| 34538e39-cd2e-4641-8d24-3c94146e6f16   | Company B    | John Doe, Maria Theresa |
+
+The output is saved as `final_company_salesowners.csv` in the `output/` directory.
+
+**Running Unit Tests:** 
+
+Unit tests validate that:
+
++ The company names are correctly normalized and grouped.
++ The salesowners list is unique and alphabetically ordered.
++ The CSV output matches the expected structure.
+
+To run the tests, use:
+    
+```bash
+pytest tests/test_company_salesowners.py
+```
+If all tests pass, the output will indicate success:
+    
+```bash
+==================================================================== test session starts ====================================================================
+platform darwin -- Python 3.11.5, pytest-8.3.3
+collected 4 items
+
+tests/test_company_salesowners.py ....                                                                                                                                                                                                                                               [100%]
+```
+
