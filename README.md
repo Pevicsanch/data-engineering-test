@@ -24,10 +24,16 @@ Here is the directory tree for better visualization:
 ├── scripts/
 │   └── data_downloader.py
 │   └── calculate_crate_distribution.py
+│   └── calculate_contact_fullname.py
+│   └──contact_address_processing.py
+
 ├── notebooks/
+│   ├── exercise_1.ipynb
 ├── tests/
 │   ├── test_data_downloader.py
 │   └── test_calculate_crate_distribution.py
+│   └── test_calculate_contact_fullname.py
+│   └── test_contact_address_processing.py
 ├── requirements.txt
 └── README.md
 ```
@@ -147,3 +153,39 @@ To run the tests, use:
 ```bash
 pytest tests/test_calculate_contact_fullname.py
 ```
+## Task 3: DataFrame of Orders with Contact Address
+
+This task extracts the city and postal code from each order’s contact information and outputs a DataFrame with order_id and contact_address. If the city name or postal code is missing, default values “Unknown” and “UNK00” are used, respectively.
+
+**Solution Summary:**
+1. Data Extraction: Reads contact_data field from orders.csv.
+2.	Data Validation and Transformation:
++	Parses contact_data to extract city and postal_code.
++	If city or postal_code is missing, assigns “Unknown” or “UNK00” as default values.
+3.	Output Generation: Saves the resulting DataFrame as contact_address.csv in the output/ directory.
+
+**How to Run:**
+
+```bash
+python scripts/contact_address_processing.py
+```
+**Example Output:** The output CSV has the following structure:
+
+| order_id                               | contact_address |
+|----------------------------------------|-----------------|
+| f47ac10b-58cc-4372-a567-0e02b2c3d479   | New York, 10001 |
+| f47ac10b-58cc-4372-a567-0e02b2c3d480   | Unknown, UNK00  |
+
+**Running Unit Tests:** Unit tests are provided to verify:
+
++	The correct extraction of city and postal code.
++	Default values are applied for missing data.
++	Output CSV matches the expected structure.
+
+to run the tests, use:
+
+```bash
+pytest tests/test_contact_address_processing.py
+```
+f all tests pass, you will see output indicating success.
+
