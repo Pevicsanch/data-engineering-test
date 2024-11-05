@@ -7,17 +7,15 @@ import logging
 # Configure logging in the test
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Add the "scripts" folder to sys.path if it's not already there
-scripts_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts'))
-if scripts_path not in sys.path:
-    sys.path.insert(0, scripts_path)
+# Add the parent directory to sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Check the paths (for debugging purposes)
-print("Current PYTHONPATH:")
-print(sys.path)
+#print("Current PYTHONPATH:")
+#print(sys.path)
 
 try:
-    from company_salesowners import create_df3, normalize_company_name
+    from scripts.company_salesowners import create_df3, normalize_company_name
 except ImportError:
     raise ImportError("Ensure that 'company_salesowners.py' is in the 'scripts' directory and the path is correctly added to sys.path.")
 
