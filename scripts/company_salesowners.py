@@ -89,6 +89,26 @@ def consolidate_salesowners(df):
         logging.error(f"Error consolidating salesowners: {e}")
         return None
 
+def create_df3(orders_df, output_path):
+    """
+    Generate df_3 from the orders data, save to CSV, and return the DataFrame.
+    """
+    # Normalize company names
+    orders_df['normalized_company_name'] = orders_df['company_name'].apply(normalize_company_name)
+    
+    # Assign similarity groups
+    orders_df = assign_similarity_groups(orders_df)
+
+    # Consolidate salesowners into df_3
+    final_df = consolidate_salesowners(orders_df)
+    if final_df is None:
+        logging.error("Failed to consolidate salesowners. Exiting.")
+        return None
+
+    # Save to CSV
+    save_to_csv(final_df, output_path)
+    return final_df
+
 def save_to_csv(df, output_path):
     """
     Save the final DataFrame to a CSV file.
@@ -117,20 +137,8 @@ def main():
         logging.error("Failed to load orders data. Exiting.")
         return
 
-    # Normalize company names
-    orders_df['normalized_company_name'] = orders_df['company_name'].apply(normalize_company_name)
-    
-    # Assign similarity groups
-    orders_df = assign_similarity_groups(orders_df)
-
-    # Consolidate salesowners
-    final_df = consolidate_salesowners(orders_df)
-    if final_df is None:
-        logging.error("Failed to consolidate salesowners. Exiting.")
-        return
-
-    # Save to CSV
-    save_to_csv(final_df, output_path)
+    # Create df_3
+    create_df3(orders_df, output_path)
 
 if __name__ == "__main__":
     main()
