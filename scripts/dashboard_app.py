@@ -4,11 +4,13 @@ import dash
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 import plotly.express as px
+import plotly.graph_objects as go
 import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Function to load and validate orders data
 def load_orders_data():
     """Load orders data from CSV file and validate it."""
     try:
@@ -32,6 +34,7 @@ def load_orders_data():
         logging.error(f"Error loading orders data: {e}")
         return None
 
+# Function to calculate crate distribution
 def calculate_crate_distribution(df):
     """Calculate the distribution of crate types."""
     try:
@@ -51,49 +54,7 @@ def calculate_crate_distribution(df):
         logging.error(f"Error calculating crate distribution: {e}")
         return None
 
-def create_crate_distribution_plot(crate_counts):
-    """Generate the crate distribution bar plot using Plotly."""
-    try:
-        if crate_counts is None or crate_counts.empty:
-            logging.warning("Data not available for plotting.")
-            return None
-
-        # Create the bar plot
-        fig = px.bar(
-            crate_counts,
-            x='crate_type',
-            y='count',
-            title='Distribution of Orders by Crate Type',
-            labels={
-                'crate_type': 'Crate Type',
-                'count': 'Number of Orders',
-                'percentage': 'Percentage'
-            },
-            color='crate_type',
-            color_discrete_sequence=px.colors.qualitative.Pastel
-        )
-        
-        # Show both order count and percentage on hover
-        fig.update_traces(
-            hovertemplate='<b>%{x}</b><br>Orders: %{y}<br>Percentage: %{customdata}%',
-            customdata=crate_counts['percentage'],
-        )
-
-        # Improve layout
-        fig.update_layout(
-            title={'x': 0.5, 'xanchor': 'center'},
-            xaxis_title='Crate Type',
-            yaxis_title='Number of Orders',
-            template='plotly_white',
-            font=dict(size=16),
-        )
-        
-        logging.info("Crate distribution plot created successfully.")
-        return fig
-    except Exception as e:
-        logging.error(f"Error creating crate distribution plot: {e}")
-        return None
-
+# Function to load and validate sales performance data
 def load_sales_performance():
     """Load sales performance data from CSV file and validate it."""
     try:
@@ -115,41 +76,112 @@ def load_sales_performance():
         logging.error(f"Error loading sales performance data: {e}")
         return None
 
+# Function to load top performers data
+def load_top_performers_data():
+    """Load top 5 performers data from CSV file and validate it."""
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        csv_path = os.path.join(script_dir, '..', 'output', 'top_5_performers.csv')
+        
+        if not os.path.exists(csv_path):
+            logging.error(f"File not found at {csv_path}")
+            return None
+        
+        top_performers_df = pd.read_csv(csv_path)
+        logging.info("Top performers data loaded successfully.")
+        
+        # Format gross_rolling_3m for display
+        top_performers_df['gross_rolling_3m_formatted'] = top_performers_df['gross_rolling_3m'].map("{:,.2f}".format)
+        
+        return top_performers_df
+    except Exception as e:
+        logging.error(f"Error loading top performers data: {e}")
+        return None
+
+# Function to create crate distribution plot
+def create_crate_distribution_plot(crate_counts):
+    """Generate the crate distribution bar plot using Plotly."""
+    fig = px.bar(
+        crate_counts,
+        x='crate_type',
+        y='count',
+        title='Distribution of Orders by Crate Type',
+        labels={'crate_type': 'Crate Type', 'count': 'Number of Orders', 'percentage': 'Percentage'},
+        color='crate_type',
+        color_discrete_sequence=px.colors.qualitative.Pastel
+    )
+    fig.update_traces(
+        hovertemplate='<b>%{x}</b><br>Orders: %{y}<br>Percentage: %{customdata}%',
+        customdata=crate_counts['percentage']
+    )
+    fig.update_layout(
+        title={'x': 0.5, 'xanchor': 'center'},
+        xaxis_title='Crate Type',
+        yaxis_title='Number of Orders',
+        template='plotly_white',
+        font=dict(size=16),
+    )
+    return fig
+
+# Function to create sales performance plot
 def create_sales_performance_plot(sales_performance_df):
     """Generate the sales performance bar plot for plastic crates using Plotly."""
-    try:
-        if sales_performance_df is None or sales_performance_df.empty:
-            logging.warning("Data not available for plotting.")
-            return None
+    fig = px.bar(
+        sales_performance_df.sort_values(by='gross_per_salesowner'),
+        x='gross_per_salesowner_k',
+        y='salesowners',
+        orientation='h',
+        title="Sales Performance for Plastic Crates (Last 12 Months)",
+        labels={'salesowners': 'Sales Owners', 'gross_per_salesowner_k': 'Gross Value per Salesowner (k€)'},
+        text='gross_per_salesowner_k',
+        color='salesowners',
+        color_discrete_sequence=px.colors.qualitative.Pastel
+    )
+    fig.update_traces(texttemplate='%{text}k', textposition='outside', textfont_size=10)
+    fig.update_layout(
+        title={'x': 0.5, 'xanchor': 'center'},
+        xaxis_title="Gross Value per Salesowner (k€)",
+        yaxis_title="",
+        xaxis=dict(tickformat=",", tickprefix="€", ticksuffix="k"),
+        template='plotly_white',
+        font=dict(size=16),
+    )
+    return fig
 
-        fig = px.bar(
-            sales_performance_df.sort_values(by='gross_per_salesowner'),
-            x='gross_per_salesowner_k',
-            y='salesowners',
-            orientation='h',
-            title="Sales Performance for Plastic Crates (Last 12 Months)",
-            labels={'salesowners': 'Sales Owners', 'gross_per_salesowner_k': 'Gross Value per Salesowner (k€)'},
-            text='gross_per_salesowner_k',
-            color='salesowners',
-            color_discrete_sequence=px.colors.qualitative.Pastel
-        )
-        
-        # Customize trace and layout
-        fig.update_traces(texttemplate='%{text}k', textposition='outside', textfont_size=10)
-        fig.update_layout(
-            title={'x': 0.5, 'xanchor': 'center'},
-            xaxis_title="Gross Value per Salesowner (k€)",
-            yaxis_title="",
-            xaxis=dict(tickformat=",", tickprefix="€", ticksuffix="k"),
-            template='plotly_white',
-            font=dict(size=16),
-        )
-        
-        logging.info("Sales performance plot created successfully.")
-        return fig
-    except Exception as e:
-        logging.error(f"Error creating sales performance plot: {e}")
-        return None
+# Function to create top performers table
+def create_top_performers_table(top_performers_df):
+    """Generate a table plot of top 5 performers with formatted values."""
+    fig = go.Figure(
+        data=[
+            go.Table(
+                header=dict(
+                    values=["Year-Month", "Salesowner", "Gross Rolling 3M (€)", "Rank"],
+                    fill_color="lightblue",
+                    align="center",
+                    font=dict(size=12, color="black"),
+                ),
+                cells=dict(
+                    values=[
+                        top_performers_df["year_month"],
+                        top_performers_df["salesowners"],
+                        top_performers_df["gross_rolling_3m_formatted"],
+                        top_performers_df["rank"].astype(int),
+                    ],
+                    fill_color="white",
+                    align="center",
+                    font=dict(size=11),
+                ),
+            )
+        ]
+    )
+    fig.update_layout(
+        title="Top 5 Performers Selling Plastic Crates for Each 3-Month Rolling Window",
+        title_x=0.5,
+        margin=dict(l=20, r=20, t=60, b=20),
+        width=800,
+        height=500,
+    )
+    return fig
 
 # Initialize Dash app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -162,6 +194,9 @@ crate_fig = create_crate_distribution_plot(crate_counts)
 sales_performance_df = load_sales_performance()
 sales_fig = create_sales_performance_plot(sales_performance_df)
 
+top_performers_df = load_top_performers_data()
+top_performers_table = create_top_performers_table(top_performers_df)
+
 # Define the layout of the app
 app.layout = dbc.Container([
     dbc.Row([
@@ -171,17 +206,19 @@ app.layout = dbc.Container([
         dbc.Col(html.H4("What is the distribution of orders by crate type?", className="text-center text-secondary mb-4"), width=12)
     ]),
     dbc.Row([
-        dbc.Col(dcc.Graph(figure=crate_fig), width=12, className="mb-5")  # Increased margin
+        dbc.Col(dcc.Graph(figure=crate_fig), width=12, className="mb-5")
     ]),
     dbc.Row([
         dbc.Col(html.H4("Which sales owners need most training to improve selling on plastic crates?", className="text-center text-secondary mb-4"), width=12)
     ]),
     dbc.Row([
-        dbc.Col(dcc.Graph(figure=sales_fig), width=12, className="mb-5")  # Increased margin
+        dbc.Col(dcc.Graph(figure=sales_fig), width=12, className="mb-5")
     ]),
-    # Placeholder for the third section
     dbc.Row([
-        dbc.Col(html.H4("Additional Analysis Placeholder 3", className="text-center text-secondary mb-5"), width=12)
+        dbc.Col(html.H4("Top 5 Performers Selling Plastic Crates for Each 3-Month Rolling Window", className="text-center text-secondary mb-4"), width=12)
+    ]),
+    dbc.Row([
+        dbc.Col(dcc.Graph(figure=top_performers_table), width=12, className="mb-5")
     ])
 ], fluid=True)
 
