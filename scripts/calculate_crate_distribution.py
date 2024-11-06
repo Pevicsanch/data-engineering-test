@@ -41,7 +41,7 @@ def save_distribution(distribution_df, output_file):
     distribution_df.to_csv(output_file, index=False)
     logging.info(f"Distribution saved to {output_file}")
 
-def main(input_file, output_file='output/crate_distribution.csv'):
+def main(input_file='/app/data/orders.csv', output_file='/app/output/crate_distribution.csv'):
     # Load and validate data
     orders = load_data(input_file)
     orders = validate_data(orders)
@@ -55,4 +55,4 @@ def main(input_file, output_file='output/crate_distribution.csv'):
 
 # Run the main function if executed as a script
 if __name__ == "__main__":
-    main(input_file='../data/orders.csv')
+    main()
