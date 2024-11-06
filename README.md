@@ -51,9 +51,37 @@ To install the necessary libraries, run:
 pip install -r requirements.txt
 ```
 
-## Data Download
+## Automated Workflow with Docker
 
-To start, you need to download the data files (orders.csv and invoicing_data.json) into the data/ directory.
+The Docker container provides an end-to-end automated workflow for data download, processing, testing, and dashboard deployment.
+
+When you start the container, it performs the following steps automatically:
+
+1.	Data Download: Fetches orders.csv and invoicing_data.json from specified URLs and saves them in /data.
+2.	Data Processing: Each Python script processes the data and generates output files in /output.
+3.	Testing: Each script is validated with unit tests to ensure functionality.
+4.	Dashboard Launch: A Dash application visualizes the data insights and is accessible at http://0.0.0.0:8050.
+
+### **Step-by-Step Guide to Running the Container**
+
+1. **Build the Docker Image:**
+
+```bash
+docker build -t data-engineering-dashboard .
+```
+
+2.	**Run the Docker Container:**
+
+```bash
+docker run -p 8050:8050 data-engineering-dashboard
+```
+3.	**Access the Dashboard:**
+
+Open a web browser and go to http://localhost:8050 in a web browser.
+
+*Note:* Output files are saved in the /output directory within the container, where they can be inspected if needed.
+
+## Data Download
 
 1. **Run the Data Download Script:** The script `scripts/data_downloader.py` downloads the necessary data files from the specified URLs
     
@@ -334,23 +362,7 @@ Upon opening the dashboard, you will see:
 2.	**Sales Performance Bar Chart** - A horizontal bar chart showing the gross sales value for each sales owner, focused on plastic crates. This chart highlights the top sales performers.
 3.	**Top Performers Table** - A table listing the top 5 performers based on the rolling 3-month gross sales value, allowing for easy identification of consistently high-performing sales owners.
 
-## Recent Additions and Workflow
-
-### Dockerized Execution of Data Processing Scripts and Dashboard
-
-I have implemented a complete Docker workflow that executes each data processing script sequentially and runs tests before starting the interactive dashboard. The key modifications include:
-
-+	**Data Download and Processing:** Upon container start-up, it automatically downloads required data files (orders.csv and invoicing_data.json) and runs each data processing script to generate outputs.
-+ **Testing:** Each script is verified with unit tests to ensure data integrity and correct output generation.
-+ **Dash Dashboard Deployment:** Finally, an interactive dashboard is launched using Dash to visualize insights from the processed data files.
-
-**Upon running the container:**
-
-+	**Data Download and Processing**: The container executes each script, saving outputs to the output/ directory.
-+ **Testing:** Each test script validates the functionality of individual scripts.
-+ **Dashboard Launch:** The container serves the dashboard at http://0.0.0.0:8050.
-
-
+________________________________________________________________________
 ## Development Workflow
 
 The development workflow for this project involves the following steps:
