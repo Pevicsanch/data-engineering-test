@@ -225,6 +225,6 @@ app.layout = dbc.Container([
 if __name__ == "__main__":
     try:
         logging.info("Starting the Dash application.")
-        app.run_server(debug=True)
+        app.run_server(host="0.0.0.0", port=8050)
     except Exception as e:
         logging.error(f"An error occurred while running the Dash app: {e}")
