@@ -334,4 +334,33 @@ Upon opening the dashboard, you will see:
 2.	**Sales Performance Bar Chart** - A horizontal bar chart showing the gross sales value for each sales owner, focused on plastic crates. This chart highlights the top sales performers.
 3.	**Top Performers Table** - A table listing the top 5 performers based on the rolling 3-month gross sales value, allowing for easy identification of consistently high-performing sales owners.
 
-Each of these sections provides actionable insights based on the processed data.
+## Recent Additions and Workflow
+
+### Dockerized Execution of Data Processing Scripts and Dashboard
+
+I have implemented a complete Docker workflow that executes each data processing script sequentially and runs tests before starting the interactive dashboard. The key modifications include:
+
++	**Data Download and Processing:** Upon container start-up, it automatically downloads required data files (orders.csv and invoicing_data.json) and runs each data processing script to generate outputs.
++ **Testing:** Each script is verified with unit tests to ensure data integrity and correct output generation.
++ **Dash Dashboard Deployment:** Finally, an interactive dashboard is launched using Dash to visualize insights from the processed data files.
+
+**Upon running the container:**
+
++	**Data Download and Processing**: The container executes each script, saving outputs to the output/ directory.
++ **Testing:** Each test script validates the functionality of individual scripts.
++ **Dashboard Launch:** The container serves the dashboard at http://0.0.0.0:8050.
+
+
+## Development Workflow
+
+The development workflow for this project involves the following steps:
+
+1.	**Jupyter Notebooks:** Each task was initially explored and prototyped within Jupyter Notebooks, allowing for rapid testing and data inspection. the notebooks are available in the notebooks/ directory. There users can find the initial exploration and testing of each task.
+2.	**Script Conversion:** After validation, the notebook code was transformed into standalone Python scripts for modular and repeatable processing.
+3.	**Testing:** Each script was validated with unit tests, designed to confirm correct functionality and integration with the data pipeline.
+4.	**Docker Integration:** Finally, all scripts were integrated into a Docker environment, allowing the complete data processing workflow, testing, and dashboard deployment to execute automatically within a single container instance.
+
+## Final Notes
+
++ The Docker setup ensures that all dependencies are installed, data is downloaded, and each task runs in sequence without requiring manual intervention.
++ Each section in the dashboard provides actionable insights based on processed data, making this setup suitable for further automation and integration into production systems.
