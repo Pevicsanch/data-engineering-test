@@ -284,4 +284,54 @@ collected 4 items
 
 tests/test_company_salesowners.py ....                                                                                                                                                                                                                                               [100%]
 ```
+## Task 6: Interactive Dashboard with Dash
 
+This task implements an interactive dashboard using Dash to visualize the results of the previous tasks. The dashboard provides insights into crate distribution, sales performance, and top performers in the sales team.
+
+**Solution Summary:**
+
+1.	**Data Loading:** Loads data from the processed output files (crate_distribution.csv, sales_performance.csv, top_5_performers.csv) stored in the output/ directory.
+2.	**Dashboard Layout:**
+    +	Crate Distribution: A bar chart showing the distribution of crate types.
+    +	Sales Performance: A horizontal bar chart illustrating the gross sales value for each sales owner.
+    +	Top Performers: A table highlighting the top 5 performers by gross sales value for each 3-month rolling period.
+3.	**Deployment with Docker:** A Dockerized environment is used to run the dashboard.
+
+**How to Run the Dashboard**
+
+1.	**Build the Docker Image:**
+Ensure you are in the root directory of the project, then build the Docker image by running:
+    
+    ```bash
+    docker build -t data-engineering-dashboard .
+    ```
+2.	**Run the Docker Container:**
+
+To start the dashboard, run the following command:
+
+```bash
+docker run -p 8050:8050 data-engineering-dashboard
+```
+
+3.    **Access the Dashboard:**
+To start the dashboard, run the following command:
+
+```bash
+docker run -p 8050:8050 data-engineering-dashboard
+```
+
+**Dashboard Layout**
+
++ **Crate Distribution Section:** Shows a bar chart of crate types used by each company, providing a quick overview of the preferred crate types.
++ **Sales Performance Section:** Displays the gross sales value for each sales owner who sold plastic crates in the last 12 months, identifying which sales owners need improvement in selling plastic crates.
++ **Top 5 Performers Table:** Lists the top 5 performers in terms of gross sales value for each 3-month rolling period, with columns for the sales owner, gross value, and rank.
+
+**Example Visualizations**
+
+Upon opening the dashboard, you will see:
+
+1.	**Crate Distribution Chart** - A bar chart where each bar represents the number of orders by crate type, categorized by companies. It helps identify popular crate types across companies.
+2.	**Sales Performance Bar Chart** - A horizontal bar chart showing the gross sales value for each sales owner, focused on plastic crates. This chart highlights the top sales performers.
+3.	**Top Performers Table** - A table listing the top 5 performers based on the rolling 3-month gross sales value, allowing for easy identification of consistently high-performing sales owners.
+
+Each of these sections provides actionable insights based on the processed data.
